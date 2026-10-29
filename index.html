@@ -154,7 +154,8 @@ button{font:inherit;cursor:pointer}
 .ysep{stroke:var(--muted);stroke-width:1}
 .mtk{stroke:var(--line);stroke-width:1}
 .axt{fill:var(--muted);font-family:var(--font-mono);font-size:11px}
-.grid line,line.gl{stroke:var(--line);stroke-width:1}
+.grid line,line.gl{stroke:var(--line);stroke-width:1;opacity:.3}   /* faint gridlines: there to read values against, not to look at */
+.grid line[style*="--muted"]{opacity:1}   /* the link score chart's zero line stays a clear reference */
 .vline{fill:none;stroke:var(--text);stroke-width:2.5;stroke-linejoin:round;stroke-linecap:round;filter:drop-shadow(0 0 5px var(--glow))}
 .varea{fill:var(--text);opacity:.06}
 .wm{fill:var(--text);opacity:.09;font-family:var(--font-body);font-weight:600;font-variant-numeric:tabular-nums}
