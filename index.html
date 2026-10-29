@@ -400,7 +400,7 @@ html:root[data-style="heart"]{
             <p class="ptitle">Cumulative change in VO2 Max, month by month</p>
             <svg id="wf" role="img" aria-label="Waterfall: VO2 Max from the 2025 plateau to Oct 2026, one step per month"></svg>
             <div class="legend" id="wf-legend"></div>
-            <div class="caption">Each step is the change in monthly average VO2 Max from the month before. Minutes = dragon boat time that month.</div>
+            <div class="caption">Each step is the change in monthly average VO2 Max from the month before. Hours = dragon boat time that month.</div>
           </div>
           <div class="scene" id="sc-lvl">
             <div class="counter">
@@ -581,7 +581,7 @@ const hoursPerMonth = rows => GROUPS.reduce((a, g) => a + avgK(rows, g.k), 0) / 
 const WF_PRE = M[M.indexOf(AFTER[0]) - 1];          // the month before the first full paddling month
 const WF_ITEMS = [{ k: "total", lab: "2025", sub: "average", v: P0.mean },
   { k: "pre", lab: "Sep-Feb", sub: "before", d: WF_PRE.vo2 - P0.mean }]
-  .concat(AFTER.map((r, i) => ({ k: "boat", lab: MON[+r.m.slice(5, 7) - 1], sub: r.boat + "min", d: r.vo2 - (i ? AFTER[i - 1].vo2 : WF_PRE.vo2) })))
+  .concat(AFTER.map((r, i) => ({ k: "boat", lab: MON[+r.m.slice(5, 7) - 1], sub: (r.boat / 60).toFixed(1) + "hrs", d: r.vo2 - (i ? AFTER[i - 1].vo2 : WF_PRE.vo2) })))
   .concat([{ k: "total", lab: MON[+H.latestMonth.slice(5, 7) - 1] + " " + H.latestMonth.slice(2, 4), sub: "now", v: H.latest }]);
 let lvl = 0;
 WF_ITEMS.forEach(o => { o.from = o.k === "total" ? null : lvl; lvl = o.k === "total" ? o.v : lvl + o.d; o.to = lvl; });
@@ -847,6 +847,11 @@ function renderMain() {
   for (let y = +WK[0].w.slice(0, 4); y <= +lastM.slice(0, 4); y++) {
     const j = x(wi(y + "-01-01"));
     if (j > L && j < xEnd) ticks += `<line class="ysep" x1="${j.toFixed(1)}" x2="${j.toFixed(1)}" y1="${B}" y2="${B + 20}"/>`;
+    // small month ticks, no labels
+    for (let k = 2; k <= 12; k++) {
+      const mx = x(wi(`${y}-${String(k).padStart(2, "0")}-01`));
+      if (mx > L && mx < xEnd) ticks += `<line class="mtk" x1="${mx.toFixed(1)}" x2="${mx.toFixed(1)}" y1="${B}" y2="${B + 5}"/>`;
+    }
     const a = Math.max(L, j, x(0) - step / 2), b = Math.min(xEnd, x(wi((y + 1) + "-01-01")), x(ALLW.length - 1) + step);
     if (b - a > 34) ticks += `<text class="tick yr" x="${((a + b) / 2).toFixed(1)}" y="${B + 16}" text-anchor="middle">${y}</text>`;
   }
@@ -1138,7 +1143,7 @@ function buildWf() {
     // phone: short labels (25, Pre, M A M ..., Now) and minutes without the unit
     const nar = narrow(), lab = !nar ? o.lab : o.k === "boat" ? o.lab[0] : o.k === "pre" ? "Pre" : i ? "Now" : "2025";
     el("text", { x: x(i), y: B + 15, "text-anchor": "middle", class: "tick", style: o.k === "boat" ? "" : "fill:var(--text)" }, svg, lab);
-    const sub = !nar ? o.sub : o.k === "boat" ? o.sub.replace("min", "") : "";
+    const sub = !nar ? o.sub : o.k === "boat" ? o.sub.replace("hrs", "") : "";
     el("text", { x: x(i), y: B + 28, "text-anchor": "middle", class: "tick", ...(nar ? { style: "font-size:9px" } : {}) }, svg, sub);
     return { o, bar, con, val };
   });
