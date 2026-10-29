@@ -1544,7 +1544,7 @@ function setPlaying(on) {
     let next = cur >= STEPS.length - 1 || cur < 0 || stepEls[0].getBoundingClientRect().top > innerHeight ? 0 : cur + 1;
     const run = () => {
       if (!playing) return;
-      if (next >= STEPS.length) { setPlaying(false); return; }
+      if (next >= STEPS.length) { setPlaying(false); if (document.fullscreenElement) document.exitFullscreen().catch(() => {}); return; }
       const start = next === 0 && cur <= 0 && stepEls[0].getBoundingClientRect().top > innerHeight * .6;   // from the title: get there quicker
       if (start) { lineHold = true; cancelAnimationFrame(anims.view); view.t = 0; view.f = 0; renderMain(); }
       glideTo(next, start ? 3000 : stopGo() ? MOVE : next === 1 ? DWELL_FIRST : DWELL, () => {
@@ -1560,7 +1560,18 @@ function setPlaying(on) {
 }
 // scrolling by hand takes over from Play
 ["wheel", "touchstart"].forEach(t => addEventListener(t, e => { if (playing && !e.target.closest?.(".play")) setPlaying(false); }, { passive: true }));
-playBtn.addEventListener("click", () => setPlaying(!playing));
+// phone: Play goes full screen where the browser allows it (Chrome on Android), so the browser bars get out of the way.
+// iPhone browsers don't let a page go full screen, so there it just plays as before.
+const phoneFs = () => innerWidth < 900 && matchMedia("(pointer:coarse)").matches;
+function enterFs() {
+  const d = document.documentElement;
+  if (!phoneFs() || document.fullscreenElement || !d.requestFullscreen) return Promise.resolve();
+  // wait for the charts to resize to the taller screen before the first glide
+  // if the browser never answers, Play starts anyway after a second
+  const fs = d.requestFullscreen({ navigationUI: "hide" }).then(() => new Promise(r => setTimeout(r, 450))).catch(() => {});
+  return Promise.race([fs, new Promise(r => setTimeout(r, 1000))]);
+}
+playBtn.addEventListener("click", () => { if (playing) setPlaying(false); else enterFs().then(() => setPlaying(true)); });
 document.querySelector(".totop").addEventListener("click", e => {
   e.preventDefault();
   if (playing) setPlaying(false);
