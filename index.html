@@ -23,6 +23,7 @@
   /* Original is light only, whatever the device's dark mode setting (Heart Monitor is always dark) */
   --bg:#f4f4f4;--card:#ffffff;--text:#333333;--muted:#6b6b6b;--line:#e3e3e3;
   --accent:#ED1C24;--accent-text:#c4141b;--on-accent:#ffffff;
+  --accent-btn:#D7141C;   /* white text on red buttons: 5.24:1 (#ED1C24 is 4.38:1) */
   --c-strength:#333333;--c-walking:#c4c4c4;--c-other:#7a7a7a;--c-boat:#ED1C24;
   --band:rgba(0,0,0,.035);--glow:rgba(0,0,0,0);
   color-scheme:light;
@@ -49,7 +50,7 @@ h1 span{color:var(--accent)}
 .hero-stats .l{font-family:var(--font-mono);font-size:12px;color:var(--muted);margin-top:6px}
 .controls{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin-top:12px}
 button{font:inherit;cursor:pointer}
-.play{min-height:48px;padding:0 22px;border-radius:24px;border:0;background:var(--accent);color:var(--on-accent);font-weight:500;display:inline-flex;align-items:center;gap:10px}
+.play{min-height:48px;padding:0 22px;border-radius:24px;border:0;background:var(--accent-btn,var(--accent));color:var(--on-accent);font-weight:500;display:inline-flex;align-items:center;gap:10px}
 .play:focus-visible,summary:focus-visible{outline:2px solid var(--text);outline-offset:3px}
 .hint{font-size:14px;color:var(--muted)}
 .dragon{display:inline-block;background:var(--dragon-c,var(--accent));-webkit-mask:var(--dragon) center/contain no-repeat;mask:var(--dragon) center/contain no-repeat;aspect-ratio:1927/1019}
@@ -61,12 +62,14 @@ button{font:inherit;cursor:pointer}
 @media (max-height:820px){.hero{min-height:0;gap:12px;padding:20px 0 28px}.hero-dragon{width:clamp(100px,16vw,150px)}h1{font-size:clamp(34px,6vw,60px)}}
 @media (max-width:699px){.styles button{padding:0 12px}}
 @media (max-width:699px) and (max-height:720px){.hero{gap:10px;padding-top:16px}.styles{top:16px}h1{font-size:32px}.dek{font-size:16px}.hero-stats{gap:6px 24px}.hero-stats .n{font-size:28px}.controls{margin-top:4px}}
+/* landscape phones: compact top so Play and "What is VO2 Max?" are on the first screen (all three stats stay) */
+@media (max-height:480px){.hero{min-height:0;gap:6px;padding:10px 0 14px}.hero-dragon{width:64px}.styles{top:8px}h1{font-size:26px}.dek{font-size:14px;max-width:none}.hero-stats{gap:2px 24px;margin-top:0}.hero-stats .n{font-size:22px}.hero-stats .l{margin-top:2px}.controls{margin-top:0}}
 .vo2x p{margin:0 0 10px;font-size:15px}
 .vo2x .credit{margin:8px 0 0;font-size:11px;line-height:1.45}
 /* explainer: Apple-style range columns, men or women */
 .sexes{display:flex;width:max-content;margin:2px 0 6px auto;gap:2px;padding:3px;border:1px solid var(--line);border-radius:999px}
-.sexes button{min-height:40px;padding:0 16px;border:0;border-radius:999px;background:none;color:var(--muted);font:500 13px var(--font-body);cursor:pointer}
-.sexes button[aria-pressed="true"]{background:var(--accent);color:var(--on-accent)}
+.sexes button{min-height:44px;padding:0 16px;border:0;border-radius:999px;background:none;color:var(--muted);font:500 13px var(--font-body);cursor:pointer}
+.sexes button[aria-pressed="true"]{background:var(--accent-btn,var(--accent));color:var(--on-accent)}
 .sexes button:focus-visible{outline:2px solid var(--accent-text);outline-offset:2px}
 [data-style="heart"] .sexes,[data-style="heart"] .sexes button{border-radius:6px}
 #vx{display:block;width:100%;height:230px}
@@ -265,8 +268,8 @@ svg[data-focus="boat"] .seg:not(.g-boat){opacity:.22}
 /* After */
 .after{padding:40px 0 64px;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px 24px}
 .after .credit{margin:0}
-.totop{margin-left:auto;min-height:44px;display:inline-flex;align-items:center;gap:6px;padding:0 4px;color:var(--accent-text);font-weight:500;text-decoration:none}
-.totop:hover{text-decoration:underline}
+.totop{margin-left:auto;min-height:44px;display:inline-flex;align-items:center;gap:6px;padding:0 4px;color:var(--muted);font-weight:400;text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:3px}
+.totop:hover{color:var(--text)}
 .totop:focus-visible{outline:2px solid var(--accent-text);outline-offset:2px;border-radius:4px}
 details{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:0 18px}
 summary{min-height:52px;display:flex;align-items:center;cursor:pointer;font-weight:500;list-style:none}
@@ -292,8 +295,8 @@ th{color:var(--muted);font-family:var(--font-mono);font-weight:500;font-size:11p
 .rec .controls .hint{display:none}
 /* style toggle: Original or Heart Monitor */
 .styles{position:absolute;top:24px;right:0;z-index:1;display:inline-flex;gap:2px;padding:3px;border:1px solid var(--line);border-radius:999px}
-.styles button{min-height:40px;padding:0 16px;border:0;border-radius:999px;background:none;color:var(--muted);font:500 13px var(--font-body);cursor:pointer}
-.styles button[aria-pressed="true"]{background:var(--accent);color:var(--on-accent)}
+.styles button{min-height:44px;padding:0 16px;border:0;border-radius:999px;background:none;color:var(--muted);font:500 13px var(--font-body);cursor:pointer}
+.styles button[aria-pressed="true"]{background:var(--accent-btn,var(--accent));color:var(--on-accent)}
 .styles button:focus-visible{outline:2px solid var(--accent-text);outline-offset:2px}
 [data-style="heart"] .styles,[data-style="heart"] .styles button,[data-style="heart"] .dial{border-radius:6px}
 .rec .styles{display:none}
@@ -304,7 +307,7 @@ th{color:var(--muted);font-family:var(--font-mono);font-weight:500;font-size:11p
 html:root[data-style="heart"]{
   --font-body:"Chakra Petch",Arial,sans-serif;--font-mono:"Share Tech Mono",Consolas,monospace;
   --bg:#030a07;--card:#07140e;--text:#d9fbe9;--muted:#74a98e;--line:#143a2a;
-  --accent:#2df59a;--accent-text:#5dffb4;--on-accent:#03140c;
+  --accent:#2df59a;--accent-text:#5dffb4;--on-accent:#03140c;--accent-btn:#2df59a;
   --c-strength:#b7d9c8;--c-walking:#3d6252;--c-other:#7aa592;--c-boat:#2df59a;
   --band:rgba(45,245,154,.05);--glow:rgba(45,245,154,.55);--grid:rgba(45,245,154,.06);
   color-scheme:dark;
@@ -410,8 +413,8 @@ html:root[data-style="heart"]{
           </div>
           <div class="scene" id="sc-corr">
             <p class="ptitle">Link score with VO2 Max: 1 = moves in step, 0 = no link</p>
-            <svg id="corr" role="img" aria-label="Correlation of monthly VO2 Max with minutes of each exercise"></svg>
-            <div class="caption">3-month rolling, Jul 2024 to Oct 2026. Same-month r in brackets.</div>
+            <svg id="corr" role="img" aria-label="Link score of monthly VO2 Max with minutes of each exercise"></svg>
+            <div class="caption">3-month rolling, Jul 2024 to Oct 2026. Same-month score in brackets.</div>
           </div>
           <div class="scene" id="sc-sess">
             <div class="counter">
@@ -429,7 +432,7 @@ html:root[data-style="heart"]{
           <div class="scene scroll" id="sc-sum">
             <div class="tiles" id="sum-tiles"></div>
             <ul class="caveats">
-              <li><b>Observed Fact:</b> dragon boat minutes move with VO2 Max (r <span data-v="rBoat"></span>). No other exercise does.</li>
+              <li><b>Observed Fact:</b> dragon boat minutes move with VO2 Max (link score <span data-v="rBoat"></span>). No other exercise does.</li>
               <li><b>Strong Inference:</b> paddling is the most likely driver of the 2026 rise. It is the only training that changed.</li>
               <li><b>Caveat:</b> 28 months of data, and much of the link is a before and after step. VO2 Max is an Apple Watch estimate from outdoor walks and runs.</li>
             </ul>
@@ -827,7 +830,9 @@ function renderMain() {
   const step = (Rl - L) / (d1 - d0);
 
   // gridlines and y labels follow the rescaling axis
-  const gs = yHi - yLo > 9 ? 2 : 1;
+  // labels at least 18 px apart, so they never overlap on a short screen or at 200% zoom
+  let gs = yHi - yLo > 9 ? 2 : 1;
+  while ((B - T) / (yHi - yLo) * gs < 18) gs++;
   let g = "";
   for (let v = Math.ceil(yLo / gs) * gs; v <= yHi; v += gs) {
     const y = yv(v).toFixed(1);
@@ -1558,8 +1563,12 @@ function setPlaying(on) {
     run();
   }
 }
-// scrolling by hand takes over from Play
-["wheel", "touchstart"].forEach(t => addEventListener(t, e => { if (playing && !e.target.closest?.(".play")) setPlaying(false); }, { passive: true }));
+// scrolling by hand takes over from Play. On a phone, a small nudge doesn't: it's how the browser bar is hidden
+// (iPhone browsers won't hide it for a page), so Play only stops once a finger moves well over 90 px.
+addEventListener("wheel", e => { if (playing && !e.target.closest?.(".play")) setPlaying(false); }, { passive: true });
+let touchY = null;
+addEventListener("touchstart", e => { touchY = e.target.closest?.(".play") ? null : e.touches[0].clientY; }, { passive: true });
+addEventListener("touchmove", e => { if (playing && touchY != null && Math.abs(e.touches[0].clientY - touchY) > 90) setPlaying(false); }, { passive: true });
 // phone: Play goes full screen where the browser allows it (Chrome on Android), so the browser bars get out of the way.
 // iPhone browsers don't let a page go full screen, so there it just plays as before.
 const phoneFs = () => innerWidth < 900 && matchMedia("(pointer:coarse)").matches;
