@@ -751,7 +751,7 @@ function buildMain() {
   const svg = document.getElementById("vo2"); svg.innerHTML = "";
   svg.classList.toggle("narrow", narrow());
   const [W, Hh] = size(svg);
-  const L = 30, R = W - 4, T = 22, B = Hh - 38;
+  const L = 30, R = W - 4, T = 22, B = Hh - 24;   // room under the plot for the year labels
   Object.assign(MC, { svg, W, Hh, L, R, T, B });
   if (!MC.ys) MC.ys = yTarget();
 
@@ -840,23 +840,15 @@ function renderMain() {
   }
   MC.grid.innerHTML = g;
 
-  // x-axis stretches with the line: months on top, grouped under their year
-  const pxM = step * 4.35, every = pxM >= 30 ? 1 : pxM >= 11 ? 3 : 6;
+  // x-axis stretches with the line: years only, split at each new year
   const xEnd = Rl + room();
-  let ticks = "", m = WK[0].w.slice(0, 7);
+  let ticks = "";
   const lastM = ALLW[ALLW.length - 1].slice(0, 7);
-  while (m <= lastM) {
-    const a = x(wi(m + "-01")), b = x(wi(nextM(m) + "-01")), k = +m.slice(5, 7);
-    if (b > L && a < xEnd) {
-      if (k === 1) ticks += `<line class="ysep" x1="${a.toFixed(1)}" x2="${a.toFixed(1)}" y1="${B}" y2="${B + 36}"/>`;
-      else ticks += `<line class="mtk" x1="${a.toFixed(1)}" x2="${a.toFixed(1)}" y1="${B}" y2="${B + 5}"/>`;
-      if ((k - 1) % every === 0) ticks += `<text class="tick" x="${((a + b) / 2).toFixed(1)}" y="${B + 16}" text-anchor="middle">${MON[k - 1]}</text>`;
-    }
-    m = nextM(m);
-  }
   for (let y = +WK[0].w.slice(0, 4); y <= +lastM.slice(0, 4); y++) {
-    const a = Math.max(L, x(wi(y + "-01-01")), x(0) - step / 2), b = Math.min(xEnd, x(wi((y + 1) + "-01-01")), x(ALLW.length - 1) + step);
-    if (b - a > 34) ticks += `<text class="tick yr" x="${((a + b) / 2).toFixed(1)}" y="${B + 33}" text-anchor="middle">${y}</text>`;
+    const j = x(wi(y + "-01-01"));
+    if (j > L && j < xEnd) ticks += `<line class="ysep" x1="${j.toFixed(1)}" x2="${j.toFixed(1)}" y1="${B}" y2="${B + 20}"/>`;
+    const a = Math.max(L, j, x(0) - step / 2), b = Math.min(xEnd, x(wi((y + 1) + "-01-01")), x(ALLW.length - 1) + step);
+    if (b - a > 34) ticks += `<text class="tick yr" x="${((a + b) / 2).toFixed(1)}" y="${B + 16}" text-anchor="middle">${y}</text>`;
   }
   MC.ticks.innerHTML = ticks;
 
