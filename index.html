@@ -146,6 +146,7 @@ button{font:inherit;cursor:pointer}
 .legend span{display:inline-flex;align-items:center}
 .legend i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:6px}
 .legend .dragon{width:20px;margin-right:6px;border-radius:0}
+.corr-key b{color:var(--text);font-weight:500}
 .caption{font-family:var(--font-mono);font-size:11px;line-height:1.45;color:var(--muted);margin-top:4px}
 .counter{display:flex;flex-wrap:wrap;gap:6px 26px;margin-bottom:4px}
 .counter div{display:flex;flex-direction:column}
@@ -217,6 +218,8 @@ svg[data-focus="boat"] .seg:not(.g-boat){opacity:.22}
 .lvd{fill:var(--muted);stroke:var(--card);stroke-width:1.5}
 /* phone: counters side by side, and the caveat is already in the chapter text */
 @media (max-width:640px){#sc-lvl .counter{display:grid;grid-template-columns:1fr 1fr;gap:2px 12px}#sc-lvl .counter .n{font-size:20px}#sc-lvl .caption{display:none}}
+/* phone: the waterfall needs its height, so the caption goes (the chapter text explains the steps) and the legend is compact */
+@media (max-width:640px){#sc-wf .caption{display:none}#wf-legend{font-size:11px;gap:2px 10px}}
 .wfv{font:500 12px var(--font-body);fill:var(--text);font-variant-numeric:tabular-nums}
 .wfv.up{fill:var(--accent-text)}
 .wfv.dn,.wfv.pre{fill:var(--muted)}
@@ -382,7 +385,6 @@ html:root[data-style="heart"]{
           <div class="scene" id="sc-barbell">
             <p class="ptitle">Average minutes a month, by exercise</p>
             <svg id="bb" class="bb" role="img" aria-label="Average monthly minutes by exercise, before and since paddling"></svg>
-            <div class="legend" id="bb-legend"></div>
           </div>
           <div class="scene" id="sc-wf">
             <p class="ptitle">Cumulative change in VO2 Max, month by month</p>
@@ -402,6 +404,7 @@ html:root[data-style="heart"]{
           <div class="scene" id="sc-corr">
             <p class="ptitle">Link score with VO2 Max: 1 = moves in step, 0 = no link</p>
             <svg id="corr" role="img" aria-label="Link score of monthly VO2 Max with minutes of each exercise"></svg>
+            <div class="legend corr-key"><span><b>Strong correlation</b>&nbsp;0.7 to 1</span><span><b>Moderate</b>&nbsp;0.4 to 0.7</span><span><b>Weak</b>&nbsp;0 to 0.4</span><span>Same for minus scores</span></div>
             <div class="caption">3-month rolling, Jul 2024 to Oct 2026. Same-month score in brackets.</div>
           </div>
           <div class="scene" id="sc-sess">
@@ -561,7 +564,8 @@ const fmtD = d => +d.slice(8) + " " + MON[+d.slice(5, 7) - 1];
 const idx = m => M.findIndex(r => r.m === m);
 const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
 const lerp = (a, b, p) => a + (b - a) * p;
-const fmtR = r => (r < 0 ? "−" : "") + Math.abs(r).toFixed(2);
+// link scores to 1 decimal place (no minus sign on a score that rounds to 0.0)
+const fmtR = r => (r <= -.05 ? "−" : "") + Math.abs(r).toFixed(1);
 const nf = n => n.toLocaleString("en-AU");
 const narrow = () => innerWidth < 640;
 
@@ -1084,22 +1088,28 @@ function buildSwarm() {
 /* ---------- Panel: barbell, average minutes a month before and since paddling ---------- */
 function buildBarbell() {
   const svg = document.getElementById("bb"); svg.innerHTML = "";
-  const [w, Hh] = size(svg);
-  const nar = w < 520, xa = nar ? Math.max(64, w * .24) : w * .3, xb = w - (nar ? Math.max(110, w * .34) : w * .3), top = 20, bot = 8;
   const items = GROUPS.map(g => ({ ...g, a: avgK(BEFORE, g.k), b: avgK(AFTER, g.k) }));
+  const key = [...items].sort((p, q) => Math.abs(q.b - q.a) - Math.abs(p.b - p.a)).slice(0, 2).map(b => b.k);
+  // no legend: each series is named on the chart (left end; Dragon boat starts at 0, so it is named on the right)
+  const [w, Hh] = size(svg);
+  const nar = w < 520, xa = nar ? Math.max(104, w * .33) : w * .32, xb = w - (nar ? Math.max(110, w * .34) : w * .3), top = 20, bot = 24;
   const hi = Math.ceil(Math.max(...items.flatMap(b => [b.a, b.b])) / 100) * 100;
   const Y = v => top + (Hh - top - bot) * (1 - v / hi);
-  const key = [...items].sort((p, q) => Math.abs(q.b - q.a) - Math.abs(p.b - p.a)).slice(0, 2).map(b => b.k);
   const grid = el("g", { class: "grid" }, svg);
   for (let t = 0; t <= hi; t += 100) {
     el("line", { x1: xa, x2: xb, y1: Y(t), y2: Y(t), style: "stroke-dasharray:2 4" }, grid);
-    el("text", { x: xa - 8, y: Y(t) + 4, "text-anchor": "end", class: "tick" }, svg, t);
+    // minute ticks sit at the far left, so the series names fit between them and the Before axis
+    el("text", { x: 24, y: Y(t) + 4, "text-anchor": "end", class: "tick" }, svg, t);
   }
-  [[xa, PER[0].short], [xb, PER[1].short]].forEach(([x, l]) => {
+  // x-axis: period name on top, its date range underneath
+  PER.forEach((p, j) => {
+    const x = j ? xb : xa;
     el("line", { x1: x, x2: x, y1: Y(hi), y2: Y(0), style: "stroke:var(--muted);stroke-width:1.5" }, svg);
-    el("text", { x, y: 12, "text-anchor": "middle", class: "tick", style: "fill:var(--text)" }, svg, l);
+    el("text", { x, y: 12, "text-anchor": "middle", class: "tick", style: "fill:var(--text)" }, svg, p.short);
+    // phone: "Jan 25 to Aug 25" becomes "Jan–Aug 25", so the two ranges don't run together
+    el("text", { x, y: Y(0) + 18, "text-anchor": "middle", class: "tick" }, svg, nar ? p.lab.replace(/^(\w+) (\d+) to (\w+) \2$/, "$1–$3 $2") : p.lab);
   });
-  const labs = [];
+  const labs = [], left = [];
   // one line at a time, dragon boat last
   [...items].sort((p, q) => (p.k === "boat") - (q.k === "boat") || key.includes(p.k) - key.includes(q.k)).forEach((b, i) => {
     const k = key.includes(b.k), c = `var(--c-${b.k})`, r = k ? 7 : 4.5, dl = (.2 + i * .85).toFixed(2) + "s";
@@ -1109,25 +1119,36 @@ function buildBarbell() {
     el("circle", { cx: xa, cy: Y(b.a), r, style: `fill:var(--card);stroke:${c};stroke-width:${k ? 2.5 : 1.5}` }, pw);
     el("circle", { class: "bbe", cx: xb, cy: Y(b.b), r, style: `fill:${c};stroke:var(--card);stroke-width:1` }, pw);
     const d = Math.round(b.b - b.a);
-    labs.push({ y: Y(b.b), k, dl: (.2 + i * .85 + .7).toFixed(2) + "s", t: (k ? b.name + " " : "") + Math.round(b.b), sub: k ? (d >= 0 ? "+" : "−") + Math.abs(d) + " min" : "" });
+    const boat = b.k === "boat";
+    labs.push({ y: Y(b.b), k, dl: (.2 + i * .85 + .7).toFixed(2) + "s", t: (boat ? b.name + " " : "") + Math.round(b.b), sub: k ? (d >= 0 ? "+" : "−") + Math.abs(d) + " min" : "" });
+    if (!boat) left.push({ y: Y(b.a), k, dl: (.2 + i * .85).toFixed(2) + "s", t: b.name });
   });
-  labs.sort((p, q) => p.y - q.y);
-  for (let i = 1; i < labs.length; i++) { const need = labs[i - 1].sub ? 30 : 14, short = need - (labs[i].y - labs[i - 1].y); if (short > 0) labs[i].y += short; }
+  // nudge labels apart top to bottom so none overlap
+  const spread = (arr, gap) => { arr.sort((p, q) => p.y - q.y); for (let i = 1; i < arr.length; i++) { const short = gap(arr[i - 1]) - (arr[i].y - arr[i - 1].y); if (short > 0) arr[i].y += short; } };
+  spread(labs, l => l.sub ? 30 : 14);
+  spread(left, () => 15);
   labs.forEach(l => {
     const g = el("g", { class: "bbi", style: `--d:${l.dl}` }, svg);
     el("text", { x: xb + 12, y: l.y + 4, class: l.k ? "lab" : "lab m" }, g, l.t);
     if (l.sub) el("text", { x: xb + 12, y: l.y + 19, class: "tick" }, g, l.sub);
   });
-  document.getElementById("bb-legend").innerHTML = GROUPS.map(g => `<span style="opacity:${key.includes(g.k) ? 1 : .6}"><i style="background:var(--c-${g.k});border-radius:50%"></i>${g.name}</span>`).join("") +
-    `<span><i style="border:2px solid var(--muted);border-radius:50%"></i>${PER[0].lab}</span><span><i style="background:var(--muted);border-radius:50%"></i>${PER[1].lab}</span>`;
+  left.forEach(l => {
+    const g = el("g", { class: "bbi", style: `--d:${l.dl}` }, svg);
+    el("text", { x: xa - 12, y: l.y + 4, "text-anchor": "end", class: l.k ? "lab" : "lab m" }, g, l.t);
+  });
 }
 
 /* ---------- Panel: cumulative waterfall ---------- */
 const wf = { p: 0 }, WFC = {};
 function buildWf() {
   const svg = document.getElementById("wf"); svg.innerHTML = "";
+  // legend first: it takes room from the chart, so the chart is measured after it is in place
+  // (filled after, the month labels ran into the legend on first load)
+  document.getElementById("wf-legend").innerHTML =
+    `<span><i class="dragon"></i>Paddling month, up</span><span><i style="background:var(--c-walking)"></i>Paddling month, down</span>` +
+    `<span><i style="background:var(--c-other)"></i>Before paddling</span><span><i style="background:var(--text);opacity:.85"></i>Total</span>`;
   const [W, Hh] = size(svg);
-  const L = 30, R = W - 4, T = 18, B = Hh - 34, n = WF_ITEMS.length;
+  const L = 30, R = W - 4, T = 18, B = Hh - 38, n = WF_ITEMS.length;
   const lo = Math.floor(Math.min(...WF_ITEMS.map(o => Math.min(o.to, o.from ?? o.to))) - 1);
   const hi = Math.ceil(Math.max(...WF_ITEMS.map(o => o.to)) + .6);
   const yv = v => B - (v - lo) / (hi - lo) * (B - T);
@@ -1152,15 +1173,13 @@ function buildWf() {
     if (narrow()) val.style.fontSize = "9.5px";   // CSS font beats the attribute
     // phone: short labels (25, Pre, M A M ..., Now) and minutes without the unit
     const nar = narrow(), lab = !nar ? o.lab : o.k === "boat" ? o.lab[0] : o.k === "pre" ? "Pre" : i ? "Now" : "2025";
-    el("text", { x: x(i), y: B + 15, "text-anchor": "middle", class: "tick", style: o.k === "boat" ? "" : "fill:var(--text)" }, svg, lab);
+    // month on top in the text colour, hours underneath in grey, with a clear gap between the two rows
+    el("text", { x: x(i), y: B + 16, "text-anchor": "middle", class: "tick", style: "fill:var(--text)" }, svg, lab);
     const sub = !nar ? o.sub : o.k === "boat" ? o.sub.replace("hrs", "") : "";
-    el("text", { x: x(i), y: B + 28, "text-anchor": "middle", class: "tick", ...(nar ? { style: "font-size:9px" } : {}) }, svg, sub);
+    el("text", { x: x(i), y: B + 31, "text-anchor": "middle", class: "tick", style: "fill:var(--muted)" + (nar ? ";font-size:9px" : "") }, svg, sub);
     return { o, bar, con, val };
   });
   Object.assign(WFC, { yv, lo, n });
-  document.getElementById("wf-legend").innerHTML =
-    `<span><i class="dragon"></i>Paddling month, up</span><span><i style="background:var(--c-walking)"></i>Paddling month, down</span>` +
-    `<span><i style="background:var(--c-other)"></i>Before paddling</span><span><i style="background:var(--text);opacity:.85"></i>Total</span>`;
   renderWf();
 }
 function renderWf() {
