@@ -260,7 +260,9 @@ svg[data-focus="boat"] .seg:not(.g-boat){opacity:.22}
 .tile .top{display:flex;align-items:center;justify-content:space-between;gap:10px}
 .tile .n{font-size:clamp(24px,3vw,34px);font-weight:600;line-height:1;font-variant-numeric:tabular-nums}
 .tile .n.acc{color:var(--accent-text)}
-.tile svg{width:88px;height:32px;flex:none}
+/* the sparkline shrinks to fit beside a wide number, so it never runs off the card */
+.tile{min-width:0}
+.tile svg{width:88px;height:32px;flex:0 1 88px;min-width:40px;overflow:visible}
 .tile .l{font-size:14px;margin-top:6px}
 .tile .d{font-family:var(--font-mono);font-size:11px;line-height:1.45;color:var(--muted)}
 .tile .dragon{width:24px;vertical-align:middle;margin-right:6px}
