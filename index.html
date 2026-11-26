@@ -37,7 +37,6 @@ b,strong{font-weight:500}
 
 /* Hero */
 .hero{position:relative;min-height:88vh;display:flex;flex-direction:column;justify-content:center;gap:14px;padding:24px 0 32px}
-/* at the very top, Play and "What is VO2 Max?" stay in view: tighter on short screens */
 
 .kicker{font-family:var(--font-mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:0}
 h1{font-size:clamp(36px,7vw,72px);line-height:1.04;margin:0;letter-spacing:-.02em;font-weight:600;text-wrap:balance}
@@ -51,31 +50,36 @@ h1 span{color:var(--accent)}
 .controls{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin-top:12px}
 button{font:inherit;cursor:pointer}
 .play{min-height:48px;padding:0 22px;border-radius:24px;border:0;background:var(--accent-btn,var(--accent));color:var(--on-accent);font-weight:500;display:inline-flex;align-items:center;gap:10px}
-.play:focus-visible,summary:focus-visible{outline:2px solid var(--text);outline-offset:3px}
+.play:focus-visible{outline:2px solid var(--text);outline-offset:3px}
 .hint{font-size:14px;color:var(--muted)}
 .dragon{display:inline-block;background:var(--dragon-c,var(--accent));-webkit-mask:var(--dragon) center/contain no-repeat;mask:var(--dragon) center/contain no-repeat;aspect-ratio:1927/1019}
 .hero-dragon{width:clamp(120px,22vw,220px)}
 /* the ACCA image faces left; every dragon on the page faces right */
 .dragon{transform:scaleX(-1)}
-.vo2x{max-width:640px;margin-top:4px}
-/* at the very top, Play and "What is VO2 Max?" stay in view: tighter on short screens and small phones */
+/* at the very top, Play stays in view: tighter on short screens and small phones */
 @media (max-height:820px){.hero{min-height:0;gap:12px;padding:20px 0 28px}.hero-dragon{width:clamp(100px,16vw,150px)}h1{font-size:clamp(34px,6vw,60px)}}
 @media (max-width:699px){.styles button{padding:0 12px}}
 @media (max-width:699px) and (max-height:720px){.hero{gap:10px;padding-top:16px}.styles{top:16px}h1{font-size:32px}.dek{font-size:16px}.hero-stats{gap:6px 24px}.hero-stats .n{font-size:28px}.controls{margin-top:4px}}
-/* landscape phones: compact top so Play and "What is VO2 Max?" are on the first screen (all three stats stay) */
+/* landscape phones: compact top so Play is on the first screen (all three stats stay) */
 @media (max-height:480px){.hero{min-height:0;gap:6px;padding:10px 0 14px}.hero-dragon{width:64px}.styles{top:8px}h1{font-size:26px}.dek{font-size:14px;max-width:none}.hero-stats{gap:2px 24px;margin-top:0}.hero-stats .n{font-size:22px}.hero-stats .l{margin-top:2px}.controls{margin-top:0}}
-.vo2x p{margin:0 0 10px;font-size:15px}
-.vo2x .credit{margin:8px 0 0;font-size:11px;line-height:1.45}
-/* explainer: Apple-style range columns, men or women */
+/* Chapter 1: Apple-style range columns, men or women */
 .sexes{display:flex;width:max-content;margin:2px 0 6px auto;gap:2px;padding:3px;border:1px solid var(--line);border-radius:999px}
 .sexes button{min-height:44px;padding:0 16px;border:0;border-radius:999px;background:none;color:var(--muted);font:500 13px var(--font-body);cursor:pointer}
 .sexes button[aria-pressed="true"]{background:var(--accent-btn,var(--accent));color:var(--on-accent)}
 .sexes button:focus-visible{outline:2px solid var(--accent-text);outline-offset:2px}
 [data-style="heart"] .sexes,[data-style="heart"] .sexes button{border-radius:6px}
-#vx{display:block;width:100%;height:230px}
 .vxcol{fill:var(--line);opacity:.6}
 .vxband{fill:var(--c-boat)}
 .vxv{fill:var(--text);font:500 12px var(--font-body);font-variant-numeric:tabular-nums}
+/* Chapter 1: the same range columns fill the whole chart card, over the line chart */
+.intro{position:absolute;inset:0;z-index:2;background:inherit;display:flex;flex-direction:column;padding:12px 12px 10px;opacity:0;visibility:hidden;transition:opacity .5s,visibility 0s .5s}
+.stage[data-intro="1"] .intro{opacity:1;visibility:visible;transition:opacity .5s}
+@media (min-width:700px){.intro{padding:16px 20px 12px}}
+.intro .sexes{margin:0 0 4px auto}
+.intro svg{flex:1;min-height:0;width:100%;display:block}
+.intro .credit{margin:6px 0 0;font-size:11px;line-height:1.4;color:var(--muted)}
+@media (max-width:899px){.intro .sexes button{min-height:34px}.intro .credit{display:none}}
+.dial.introoff{opacity:0}
 
 /* Scrolly */
 .scrolly{position:relative;display:grid;grid-template-columns:minmax(0,1fr)}
@@ -101,7 +105,7 @@ button{font:inherit;cursor:pointer}
 .step p{margin:0 0 8px}
 .step p:last-child{margin-bottom:0}
 .step .how{font-size:14px;color:var(--muted)}
-/* phone: Chapter 11's forecast tiles sit three across, compact, so the panel fits with no scrolling */
+/* phone: Chapter 12's forecast tiles sit three across, compact, so the panel fits with no scrolling */
 @media (max-width:640px){
   #fc-tiles{grid-template-columns:repeat(3,minmax(0,1fr));gap:5px}
   #fc-tiles .tile{padding:6px 7px}
@@ -111,7 +115,7 @@ button{font:inherit;cursor:pointer}
   #fc-tiles .tile .d{font-size:9.5px;line-height:1.35}
   #sc-fc .caveats{font-size:11px;line-height:1.4;gap:2px}
   #sc-fc{gap:8px}
-  /* Chapter 12: four tiles two by two, number and sparkline side by side, all three caveat lines kept */
+  /* Chapter 13: four tiles two by two, number and sparkline side by side, all three caveat lines kept */
   #sum-tiles{gap:4px}
   #sum-tiles .tile{padding:5px 7px}
   #sum-tiles .tile .top{flex-direction:row;align-items:center;gap:6px}
@@ -213,7 +217,7 @@ svg[data-focus="boat"] .seg:not(.g-boat){opacity:.22}
 .wfv.up{fill:var(--accent-text)}
 .wfv.dn,.wfv.pre{fill:var(--muted)}
 
-/* Hexagonal dot swarm (Visalli standard chart) */
+/* Hexagonal dot swarm (Viktor standard chart) */
 .hx{flex:1;min-height:0;display:grid;grid-template-columns:1fr 1fr;gap:12px;align-items:center}
 .hx figure{margin:0;display:flex;flex-direction:column;align-items:center;min-height:0;height:100%}
 .hx svg{flex:1;min-height:0;width:100%;max-height:100%}
@@ -243,7 +247,7 @@ svg[data-focus="boat"] .seg:not(.g-boat){opacity:.22}
 .tip b{display:block;margin-bottom:2px}
 .tip .r{display:flex;justify-content:space-between;gap:14px;font-family:var(--font-mono);font-size:12px;color:var(--muted)}
 
-/* Tiles (Visalli standard tile: number and sparkline side by side, details underneath) */
+/* Tiles (Viktor standard tile: number and sparkline side by side, details underneath) */
 .tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,150px),1fr));gap:10px}
 .tile{background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:12px 14px}
 .tile .top{display:flex;align-items:center;justify-content:space-between;gap:10px}
@@ -272,12 +276,6 @@ svg[data-focus="boat"] .seg:not(.g-boat){opacity:.22}
 .totop{margin-left:auto;min-height:44px;display:inline-flex;align-items:center;gap:6px;padding:0 4px;color:var(--muted);font-weight:400;text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:3px}
 .totop:hover{color:var(--text)}
 .totop:focus-visible{outline:2px solid var(--accent-text);outline-offset:2px;border-radius:4px}
-details{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:0 18px}
-summary{min-height:52px;display:flex;align-items:center;cursor:pointer;font-weight:500;list-style:none}
-summary::-webkit-details-marker{display:none}
-summary::before{content:"+";display:inline-block;width:20px;color:var(--accent);font-weight:700}
-details[open] summary::before{content:"\2212"}
-details .body{padding:0 0 18px}
 table{width:100%;border-collapse:collapse;font-size:14px;font-variant-numeric:tabular-nums}
 th,td{text-align:right;padding:7px 6px;border-bottom:1px solid var(--line)}
 th:first-child,td:first-child{text-align:left}
@@ -332,9 +330,8 @@ html:root[data-style="heart"]{
   animation:ecg 2.4s linear infinite}
 @keyframes ecg{to{-webkit-mask-position:-220px 0;mask-position:-220px 0}}
 [data-style="heart"] .play{border-radius:6px;box-shadow:0 0 20px var(--glow)}
-[data-style="heart"] .step .inner,[data-style="heart"] details,[data-style="heart"] .tile{border-radius:6px}
+[data-style="heart"] .step .inner,[data-style="heart"] .tile{border-radius:6px}
 /* the open explainer runs to the foot of the hero: hide the trace so it never crosses the text */
-[data-style="heart"] .hero:has(.vo2x[open])::after{display:none}
 </style>
 </head>
 <body>
@@ -358,20 +355,6 @@ html:root[data-style="heart"]{
       <button class="play" id="play" type="button" aria-pressed="false"><span aria-hidden="true" id="playIcon">&#9654;</span><span id="playLabel">Play the story</span></button>
       <span class="hint">or scroll to read at your own pace</span>
     </div>
-    <details class="vo2x" id="vo2x">
-      <summary>What is VO2 Max?</summary>
-      <div class="body">
-        <p>VO2 Max is the most oxygen your body can use during hard exercise, in millilitres per kilo of body weight per minute. It is one of the best single measures of heart and lung fitness. Higher is fitter.</p>
-        <p>Apple Watch estimates it from heart rate and pace on outdoor walks, runs and hikes. The Health app rates it against people of the same age and sex: Low, Below average, Above average or High. The coloured band is Above average for each age group.</p>
-        <div class="sexes" role="group" aria-label="Show ranges for">
-          <button type="button" data-x="m" aria-pressed="true">Men</button>
-          <button type="button" data-x="f" aria-pressed="false">Women</button>
-        </div>
-        <svg id="vx" role="img"></svg>
-        <div class="legend"><span><i style="background:var(--c-boat)"></i>Above average</span><span>Above the band: High</span><span>Below it: Low or below average</span></div>
-        <p class="credit" id="vx-src"></p>
-      </div>
-    </details>
   </header>
 
   <section class="scrolly" aria-label="The story, chapter by chapter">
@@ -439,6 +422,16 @@ html:root[data-style="heart"]{
             </ul>
           </div>
         </div>
+        <div class="intro" id="intro">
+          <p class="ptitle">Apple Health cardio fitness: the Above average VO2 Max range, by age</p>
+          <div class="sexes" role="group" aria-label="Show ranges for">
+            <button type="button" data-x="m" aria-pressed="true">Men</button>
+            <button type="button" data-x="f" aria-pressed="false">Women</button>
+          </div>
+          <svg id="vxs" role="img"></svg>
+          <div class="legend"><span><i style="background:var(--c-boat)"></i>Above average</span><span>Above the band: High</span><span>Below it: Low or below average</span></div>
+          <p class="credit" id="vxs-src"></p>
+        </div>
         <div class="tip" id="tip" role="status"></div>
       </div>
     </div>
@@ -446,75 +439,82 @@ html:root[data-style="heart"]{
     <div class="steps" id="steps">
       <article class="step"><div class="inner">
         <div class="num">Chapter 1</div>
+        <h2>What is VO2 Max?</h2>
+        <p>VO2 Max is the most oxygen your body can use during hard exercise, in millilitres per kilo of body weight per minute. Higher is fitter.</p>
+        <p>Apple Watch estimates it on outdoor walks, runs and hikes. The Health app rates it against people of the same age and sex. The coloured band is Above average.</p>
+        <p class="how">It is one of the best single measures of heart and lung fitness. These ranges are general, not my data.</p>
+      </div></article>
+      <article class="step"><div class="inner">
+        <div class="num">Chapter 2</div>
         <h2>Up and down</h2>
         <p>From 2020 to 2024 I lifted weights and walked most days. VO2 Max swung from a low of <b data-v="eLo"></b> in <span data-v="eLoM"></span> to a high of <b data-v="eHi"></b> in <span data-v="eHiM"></span>.</p>
         <p>Every high slipped back. Over the five years it averaged <b data-v="eAvg"></b>, below average for my age the whole time.</p>
       </div></article>
       <article class="step"><div class="inner">
-        <div class="num">Chapter 2</div>
+        <div class="num">Chapter 3</div>
         <h2>The plateau</h2>
         <p>Strength sessions, daily walks, some cardio. From Jan to Aug 2025, VO2 Max averaged <b data-v="p0"></b>.</p>
         <p>Steady work. No change.</p>
       </div></article>
       <article class="step"><div class="inner">
-        <div class="num">Chapter 3</div>
+        <div class="num">Chapter 4</div>
         <h2>The false start</h2>
         <p>In Sep and Oct 2025 I ran more. VO2 Max jumped to <b data-m="2025-10"></b> in Oct.</p>
         <p>Then the running dropped off. By Feb 2026 it was back to <b data-m="2026-02"></b>.</p>
       </div></article>
       <article class="step"><div class="inner">
-        <div class="num"><span class="dragon" aria-hidden="true"></span>Chapter 4</div>
+        <div class="num"><span class="dragon" aria-hidden="true"></span>Chapter 5</div>
         <h2>First paddle</h2>
         <p><b data-v="firstPaddleName"></b>. First dragon boat session: <b data-v="firstKm"></b> km in <b data-v="firstMin"></b> minutes.</p>
         <p>A new layer joins the training mix.</p>
       </div></article>
       <article class="step"><div class="inner">
-        <div class="num"><span class="dragon" aria-hidden="true"></span>Chapter 5</div>
+        <div class="num"><span class="dragon" aria-hidden="true"></span>Chapter 6</div>
         <h2>The climb that stuck</h2>
         <p>From Mar to Oct 2026, VO2 Max averaged <b data-v="p2"></b> and hit <b data-v="latest"></b> in Oct, the highest since records began in <span data-v="recordsFrom"></span>.</p>
         <p>Training rose from <b data-v="hBefore"></b> to <b data-v="hAfter"></b> hours a month, and the extra came from the boat.</p>
       </div></article>
       <article class="step"><div class="inner">
-        <div class="num"><span class="dragon" aria-hidden="true"></span>Chapter 6</div>
+        <div class="num"><span class="dragon" aria-hidden="true"></span>Chapter 7</div>
         <h2>Month by month</h2>
         <p>Start at the 2025 plateau of <b data-v="baseline"></b>. Before paddling, the running spike left a net <b data-v="wfPre"></b> by Feb 2026.</p>
         <p>The paddling months added <b data-v="wfBoat"></b> more, rising in <b data-v="wfUp"></b> of <b data-v="wfN"></b> months, to reach <b data-v="latest"></b>.</p>
         <p class="how">Coloured steps are months with dragon boat training. The chart shows when the gains came. It doesn't prove the boat caused each one.</p>
       </div></article>
       <article class="step"><div class="inner">
-        <div class="num"><span class="dragon" aria-hidden="true"></span>Chapter 7</div>
+        <div class="num"><span class="dragon" aria-hidden="true"></span>Chapter 8</div>
         <h2>From below to above average</h2>
         <p>Apple Health rates cardio fitness against people of the same age and sex. For men in their 40s, above average starts at <b data-v="above"></b>.</p>
         <p>From 2020 to Feb 2026 I sat below average<span data-v="lvSpikeTxt"></span>. Since Mar 2026, <b data-v="lvAfterTxt"></b> months have been above average, first in <span data-v="lvFirst"></span>.</p>
         <p class="how">Levels are Apple Health's own ranges for men aged 40 to 49. Above average runs from 38 to 47, High is 48 and over.</p>
       </div></article>
       <article class="step"><div class="inner">
-        <div class="num"><span class="dragon" aria-hidden="true"></span>Chapter 8</div>
+        <div class="num"><span class="dragon" aria-hidden="true"></span>Chapter 9</div>
         <h2>Only one thing changed</h2>
         <p>Dragon boat went from 0 to <b data-v="boatAfter"></b> minutes a month.</p>
         <p>Strength, walking and other cardio stayed flat or fell.</p>
       </div></article>
       <article class="step"><div class="inner">
-        <div class="num"><span class="dragon" aria-hidden="true"></span>Chapter 9</div>
+        <div class="num"><span class="dragon" aria-hidden="true"></span>Chapter 10</div>
         <h2>Paddling and fitness go together</h2>
         <p>There's a strong link between dragon boating and my cardio fitness. The more I paddled, the higher my VO2 Max went. My biggest paddling months had my highest readings.</p>
         <p>Nothing else I did shows that pattern. Strength barely tracks it. Walking and other cardio go slightly the other way.</p>
         <p class="how">The link score runs from &minus;1 to 1. Dragon boat scores <b data-v="rBoat"></b>, close to a perfect match. Strength scores <span data-v="rStrength"></span>, close to no link. A link shows the two move together. On its own it doesn't prove one causes the other.</p>
       </div></article>
       <article class="step"><div class="inner">
-        <div class="num"><span class="dragon" aria-hidden="true"></span>Chapter 10</div>
+        <div class="num"><span class="dragon" aria-hidden="true"></span>Chapter 11</div>
         <h2>The volume behind it</h2>
         <p><b data-v="sessions"></b> sessions, <b data-v="km"></b> km, <b data-v="hours"></b> hours since 15 Feb. A typical session runs <b data-v="medianMin"></b> minutes.</p>
         <p>Regatta day, 11 Oct: <b data-v="races"></b> races, <b data-v="raceKm"></b> km, average heart rate <b data-v="raceHr"></b> bpm.</p>
       </div></article>
       <article class="step"><div class="inner">
-        <div class="num"><span class="dragon" aria-hidden="true"></span>Chapter 11</div>
+        <div class="num"><span class="dragon" aria-hidden="true"></span>Chapter 12</div>
         <h2>If the habits hold</h2>
         <p>Since Mar 2026 VO2 Max has risen about <b data-v="fcSlope"></b> a month. Keep paddling the same way and it reaches about <b data-v="f6"></b> by <span data-v="f6Month"></span> and <b data-v="f12"></b> by <span data-v="f12Month"></span>.</p>
         <p class="how">Gains usually slow as fitness rises, so treat the top of each range as optimistic.</p>
       </div></article>
       <article class="step"><div class="inner">
-        <div class="num"><span class="dragon" aria-hidden="true"></span>Chapter 12</div>
+        <div class="num"><span class="dragon" aria-hidden="true"></span>Chapter 13</div>
         <h2>The result</h2>
         <p>VO2 Max is up <b data-v="changeTxt"></b> on the 2025 plateau, <b data-v="changePctTxt"></b>.</p>
         <p>The highest it has been since <span data-v="recordsFrom"></span>, and still climbing.</p>
@@ -737,15 +737,15 @@ const W_F6 = Math.min(ALLW.length - 1, Math.round(wi(F6.m + "-15"))), W_F12 = AL
 const peakIn = m => { const a = wOf(m + "-01"), b = wOf(nextM(m) + "-01") - 1; let k = a; for (let i = a; i <= b; i++) if (WK[i].vo2 > WK[k].vo2) k = i; return k; };
 const lowIn = m => { const a = wOf(m + "-01"), b = wOf(nextM(m) + "-01") - 1; let k = a; for (let i = a; i <= b; i++) if (WK[i].vo2 < WK[k].vo2) k = i; return k; };
 const ANN = [
-  { id: "ehi", i: peakIn(E_HI.m), t1: E_HI.vo2.toFixed(1), t2: "High, " + fmtM(E_HI.m) + " average", from: 0, to: 0 },
-  { id: "elo", i: lowIn(E_LO.m), t1: E_LO.vo2.toFixed(1), t2: "Low, " + fmtM(E_LO.m) + " average", from: 0, to: 0, below: true },
-  { id: "plateau", i: W_PLAT, t1: P0.mean.toFixed(1) + " avg", t2: "8 months flat", from: 1 },
-  { id: "spike", i: W_SPIKE, t1: WK[W_SPIKE].vo2.toFixed(1), t2: "Running spike", from: 2 },
-  { id: "fade", i: W_PADDLE - 1, t1: WK[W_PADDLE - 1].vo2.toFixed(1), t2: "Faded back", from: 2, to: 2, below: true },
-  { id: "paddle", i: W_PADDLE, t1: "First paddle", p: "First paddle", t2: fmtD(H.firstPaddle) + " " + H.firstPaddle.slice(0, 4), from: 3, below: true },
-  { id: "peak", i: LASTW, t1: "Best month since " + H.recordsFrom, p: WK[LASTW].vo2.toFixed(1), t2: fmtMY(H.latestMonth) + " average: " + H.latest.toFixed(1), from: 4 },
-  { id: "f6", i: W_F6, fc: true, t1: "~" + F6.v.toFixed(1), t2: "6 months: " + fmtM(F6.m), from: 10, below: true },
-  { id: "f12", i: W_F12, fc: true, t1: "12 months out", p: "~" + F12.v.toFixed(1), t2: `range ${F12.lo.toFixed(1)} to ${F12.hi.toFixed(1)}`, from: 10 }
+  { id: "ehi", i: peakIn(E_HI.m), t1: E_HI.vo2.toFixed(1), t2: "High, " + fmtM(E_HI.m) + " average", from: 1, to: 1 },
+  { id: "elo", i: lowIn(E_LO.m), t1: E_LO.vo2.toFixed(1), t2: "Low, " + fmtM(E_LO.m) + " average", from: 1, to: 1, below: true },
+  { id: "plateau", i: W_PLAT, t1: P0.mean.toFixed(1) + " avg", t2: "8 months flat", from: 2 },
+  { id: "spike", i: W_SPIKE, t1: WK[W_SPIKE].vo2.toFixed(1), t2: "Running spike", from: 3 },
+  { id: "fade", i: W_PADDLE - 1, t1: WK[W_PADDLE - 1].vo2.toFixed(1), t2: "Faded back", from: 3, to: 3, below: true },
+  { id: "paddle", i: W_PADDLE, t1: "First paddle", p: "First paddle", t2: fmtD(H.firstPaddle) + " " + H.firstPaddle.slice(0, 4), from: 4, below: true },
+  { id: "peak", i: LASTW, t1: "Best month since " + H.recordsFrom, p: WK[LASTW].vo2.toFixed(1), t2: fmtMY(H.latestMonth) + " average: " + H.latest.toFixed(1), from: 5 },
+  { id: "f6", i: W_F6, fc: true, t1: "~" + F6.v.toFixed(1), t2: "6 months: " + fmtM(F6.m), from: 11, below: true },
+  { id: "f12", i: W_F12, fc: true, t1: "12 months out", p: "~" + F12.v.toFixed(1), t2: `range ${F12.lo.toFixed(1)} to ${F12.hi.toFixed(1)}`, from: 11 }
 ];
 
 function buildMain() {
@@ -1318,6 +1318,7 @@ const tileHTML = t => `<div class="tile"><div class="top"><span class="n${t.acc 
 /* ---------- Chapters ---------- */
 const T_PLATEAU = W_PLAT + 1, T_FEB = W_PADDLE + 1;
 const STEPS = [
+  { t: 0, f: 0, bf: 0, panel: "min", focus: "none", bands: 0, intro: 1, cur: [] },
   { t: W_EARLY + 1, f: 0, bf: 0, panel: "min", focus: "none", bands: 0, cur: ["ehi", "elo"] },
   { t: T_PLATEAU, f: 0, bf: 0, panel: "min", focus: "none", bands: 1, cur: ["plateau"] },
   { t: T_FEB, f: 0, bf: 0, panel: "min", focus: "other", bands: 2, cur: ["spike", "fade"], pulse: "fade" },
@@ -1388,12 +1389,20 @@ function applyStep(i, prev = -1) {
   const s = STEPS[i];
   layers(s);
   document.getElementById("stage").dataset.pulse = s.pulse || "";
+  showIntro(!!s.intro);
   applyPanel(s, prev > i, prev >= 0 ? STEPS[prev].panel : null);
-  // Chapter 1 draws the dragon line from the very start (first visit, or back at the top); later chapters carry it on.
-  // While Play is still scrolling down to Chapter 1, the line waits.
+  // Chapter 1 has no line; Chapter 2 draws the dragon line from the very start (first visit, or back at the top); later chapters carry it on.
+  // While Play is still scrolling down to the first chapter, the line waits.
   if (lineHold) { cancelAnimationFrame(anims.view); view.t = 0; view.f = 0; renderMain(); }
   else startLine(s, i === 0);
   tween("bf", view, { bf: s.bf }, 900, renderMin);
+}
+// Chapter 1 (What is VO2 Max?): the range columns cover the chart card, and the dial steps aside
+function showIntro(on) {
+  const st = document.getElementById("stage"), was = st.dataset.intro === "1";
+  st.dataset.intro = on ? "1" : "";
+  document.getElementById("dial").classList.toggle("introoff", on);
+  if (on && !was) drawVx("vxs", true);
 }
 let lineHold = false;
 // steady racing-line pace: about 90 ms a week (roughly 0.4 s a month)
@@ -1412,6 +1421,7 @@ function setStep(i) {
 }
 // click the chart to replay this chapter's line from the previous chapter's end
 document.getElementById("stage").addEventListener("click", e => {
+  if (e.target.closest(".intro")) { if (!e.target.closest(".sexes")) drawVx("vxs", true); return; }
   if (cur < 0 || e.target.closest(".panel")) {
     if (cur >= 0) {
       const s = STEPS[cur];
@@ -1435,6 +1445,7 @@ function onScroll() {
     // back at the top: clear the line, so Chapter 1 draws it from the start again
     cur = -1;
     stepEls.forEach(e => e.classList.remove("active"));
+    showIntro(false);
     cancelAnimationFrame(anims.view); view.t = 0; view.f = 0; renderMain();
   }
 }
@@ -1451,11 +1462,13 @@ const VX_SRC = {
   f: "Apple hasn't published its ranges for women. These are estimated from the FRIEND registry, which Apple's levels come from (Kaminsky 2015): the 50th to 80th percentile, the band that matches Apple's ranges for men within 1 point at every age."
 };
 function buildVx(animate) {
-  const svg = document.getElementById("vx");
-  if (!document.getElementById("vo2x").open) return;
+  if (document.getElementById("stage").dataset.intro === "1") drawVx("vxs", animate);
+}
+function drawVx(id, animate) {
+  const svg = document.getElementById(id);
   svg.innerHTML = "";
   const bands = vxSex === "m" ? APPLE : APPLE_F;
-  const W = Math.max(svg.getBoundingClientRect().width, 260), Hh = 230;
+  const W = Math.max(svg.getBoundingClientRect().width, 260), Hh = Math.max(svg.getBoundingClientRect().height, 150);
   const L = 4, R = W - 30, T = 14, B = Hh - 26, vmin = 15, vmax = 65;
   const y = v => B - (v - vmin) / (vmax - vmin) * (B - T);
   const grid = el("g", { class: "grid" }, svg);
@@ -1484,12 +1497,11 @@ function buildVx(animate) {
     const stepA = now => { const p = clamp((now - t0) / 600, 0, 1); draw(p * p * (3 - 2 * p)); if (p < 1) requestAnimationFrame(stepA); };
     requestAnimationFrame(stepA);
   });
-  document.getElementById("vx-src").textContent = VX_SRC[vxSex];
+  document.getElementById(id + "-src").textContent = VX_SRC[vxSex];
 }
-document.getElementById("vo2x").addEventListener("toggle", () => buildVx(true));
 document.querySelectorAll(".sexes button").forEach(b => b.addEventListener("click", () => {
   vxSex = b.dataset.x;
-  document.querySelectorAll(".sexes button").forEach(o => o.setAttribute("aria-pressed", o === b));
+  document.querySelectorAll(".sexes button").forEach(o => o.setAttribute("aria-pressed", o.dataset.x === vxSex));
   buildVx(true);
 }));
 // style toggle: swap the look, keep the story where it is, remember the choice
@@ -1510,7 +1522,7 @@ styleBtns.forEach(b => b.addEventListener("click", () => {
 // Play glides the chapters up at a slow, steady pace, so the text keeps moving while the charts play out
 let playing = false, glideRaf = 0, glideWait = 0;
 const DWELL = 8500;    // ms from one chapter to the next
-const DWELL_FIRST = 11500;   // Chapter 1 draws five years of line, so its card leaves a little later
+const DWELL_FIRST = 11500;   // Chapter 1 has the most to read and Chapter 2 draws five years of line, so their cards leave a little later
 // phone: the chart fills the top of the screen, so each card slides up quickly, then stops while its chart plays and it is read
 const stopGo = () => innerWidth < 900, MOVE = 1300;
 const playBtn = document.getElementById("play");
@@ -1550,11 +1562,11 @@ function setPlaying(on) {
       if (next >= STEPS.length) { setPlaying(false); if (document.fullscreenElement) document.exitFullscreen().catch(() => {}); return; }
       const start = next === 0 && cur <= 0 && stepEls[0].getBoundingClientRect().top > innerHeight * .6;   // from the title: get there quicker
       if (start) { lineHold = true; cancelAnimationFrame(anims.view); view.t = 0; view.f = 0; renderMain(); }
-      glideTo(next, start ? 3000 : stopGo() ? MOVE : next === 1 ? DWELL_FIRST : DWELL, () => {
+      glideTo(next, start ? 3000 : stopGo() ? MOVE : next === 1 || next === 2 ? DWELL_FIRST : DWELL, () => {
         // chart and Chapter 1 are in place: now the dragon line starts
         if (start) { lineHold = false; setStep(0); startLine(STEPS[0], true); }
         const here = next++;
-        if (stopGo()) glideWait = setTimeout(run, (here === 0 ? DWELL_FIRST : DWELL) - MOVE);
+        if (stopGo()) glideWait = setTimeout(run, (here <= 1 ? DWELL_FIRST : DWELL) - MOVE);
         else run();
       });
     };
