@@ -198,6 +198,10 @@ svg[data-focus="boat"] .seg:not(.g-boat){opacity:.22}
 .lvlref line,.lvth{stroke:var(--accent);stroke-width:1.5;stroke-dasharray:2 4}
 .lvlref text,.lvth-t{fill:var(--accent-text);font:500 11px var(--font-mono)}
 .lvlref{transition:opacity .5s}
+/* line chart: very light shade for my Above average range */
+.abvband{fill:var(--accent);opacity:.07}
+/* Chapter 1: my own range (men 40 to 49, 38 to 47) pulses like each chapter's focus point */
+.vxband.mine{animation:focus 2.6s ease-in-out 1s infinite}
 .lvb{fill:var(--text)}
 .lvn{fill:var(--muted);font:400 11px var(--font-mono)}
 .lvn.on{fill:var(--text);font-weight:500}
@@ -442,6 +446,7 @@ html:root[data-style="heart"]{
         <h2>What is VO2 Max?</h2>
         <p>VO2 Max is the most oxygen your body can use during hard exercise, in millilitres per kilo of body weight per minute. Higher is fitter.</p>
         <p>Apple Watch estimates it on outdoor walks, runs and hikes. The Health app rates it against people of the same age and sex. The coloured band is Above average.</p>
+        <p>For me, at the 40 to 49 male age range, my goal was to reach Above average cardio fitness (38 to 47 VO2 Max).</p>
         <p class="how">It is one of the best single measures of heart and lung fitness. These ranges are general, not my data.</p>
       </div></article>
       <article class="step"><div class="inner">
@@ -767,6 +772,7 @@ function buildMain() {
   el("rect", { x: L, y: 0, width: R - L, height: Hh }, cp);
   const plot = el("g", { "clip-path": "url(#plot)" }, svg);
   MC.ticks = el("g", {}, plot);
+  MC.abv = el("rect", { class: "abvband", x: L, width: R - L }, plot);
   MC.bands = D.phases.map(() => {
     const g = el("g", { class: "band off" }, plot);
     return { g, rect: el("rect", { y: T, height: B - T }, g), line: el("line", {}, g) };
@@ -868,6 +874,9 @@ function renderMain() {
   MC.fzoneRect.setAttribute("x", x(LASTW + .5)); MC.fzoneRect.setAttribute("width", step * FW.length + room());
   MC.fzoneLab.setAttribute("x", x(LASTW + .5) + 6);
   const fp = wi(H.firstPaddle);
+  // Above average shade: from ABOVE up to where High starts, kept inside the plot area
+  const abTop = clamp(yv(MYN[1]), T, B), abBot = clamp(yv(ABOVE), T, B);
+  MC.abv.setAttribute("y", abTop); MC.abv.setAttribute("height", Math.max(0, abBot - abTop));
   MC.lvlLine.setAttribute("y1", yv(ABOVE)); MC.lvlLine.setAttribute("y2", yv(ABOVE)); MC.lvlTxt.setAttribute("y", yv(ABOVE) - 5);
   MC.markerLine.setAttribute("x1", x(fp)); MC.markerLine.setAttribute("x2", x(fp));
 
@@ -1482,7 +1491,7 @@ function drawVx(id, animate) {
   bands.forEach(([a, lo, hi], i) => {
     const cx = L + step * (i + .5);
     el("rect", { class: "vxcol", x: cx - w / 2, y: y(vmax - 3), width: w, height: y(vmin + 2) - y(vmax - 3), rx: 6 }, svg);
-    const band = el("rect", { class: "vxband", x: cx - w / 2, width: w, rx: 3 }, svg);
+    const band = el("rect", { class: "vxband" + (vxSex === "m" && a === MY[0] ? " mine" : ""), x: cx - w / 2, width: w, rx: 3 }, svg);
     const tHi = el("text", { class: "vxv", x: cx, y: y(hi) - 6, "text-anchor": "middle" }, svg, hi);
     const tLo = el("text", { class: "vxv", x: cx, y: y(lo) + 16, "text-anchor": "middle" }, svg, lo);
     el("text", { class: "tick", x: cx, y: B + 18, "text-anchor": "middle", style: "fill:var(--text)" }, svg, a === 60 ? "60+" : a + "–" + (a + 9));
